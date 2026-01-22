@@ -26,7 +26,15 @@ O objetivo do projeto é praticar consumo de API (`fetch`), manipulação do DOM
 
 ## 🖼️ Preview do projeto
 
-📌 Em breve: adicionar prints ou GIF aqui.
+<p float="left">
+  <img
+    src= "https://github.com/diminuirum/Projetos/raw/main/assets/Captura%20de%20tela%202026-01-22%20183025.png" width="200" />
+  <img
+src= "https://github.com/diminuirum/Projetos/raw/main/assets/Captura%20de%20tela%202026-01-22%20183038.png" width="200" />
+  <img
+src= "https://github.com/diminuirum/Projetos/raw/main/assets/Captura%20de%20tela%202026-01-22%20183130.png" width="200" />
+  <img
+src= "https://github.com/diminuirum/Projetos/raw/main/assets/WhatsApp%20Image%202026-01-22%20at%2018.32.22.jpeg" width="200" />
 
 ---
 
