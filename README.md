@@ -21,21 +21,6 @@ O objetivo do projeto é praticar consumo de API (`fetch`), manipulação do DOM
 - **CSS3**
 - **JavaScript (Vanilla JS)**
 - **API de tradução** (MyMemory)
-
----
-
-## 🖼️ Preview do projeto
-
-<p float="left">
-  <img
-    src= "https://github.com/diminuirum/Projetos/raw/main/assets/Captura%20de%20tela%202026-01-22%20183025.png" width="200" />
-  <img
-src= "https://github.com/diminuirum/Projetos/raw/main/assets/Captura%20de%20tela%202026-01-22%20183038.png" width="200" />
-  <img
-src= "https://github.com/diminuirum/Projetos/raw/main/assets/Captura%20de%20tela%202026-01-22%20183130.png" width="200" />
-  <img
-src= "https://github.com/diminuirum/Projetos/raw/main/assets/WhatsApp%20Image%202026-01-22%20at%2018.32.22.jpeg" width="200" />
-
 ---
 
 ## 📂 Como usar
@@ -43,4 +28,4 @@ src= "https://github.com/diminuirum/Projetos/raw/main/assets/WhatsApp%20Image%20
 Você pode clonar com:
 
 ```bash
-git clone https://github.com/SEU_USUARIO/SEU_REPOSITORIO.git
+git clone : https://github.com/JonasMenezes-Dev

@@ -1,201 +1,156 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    let inputTexto = document.querySelector(".input-texto"); // seleciona o primeiro elemento com essa classe
-    let outputTexto = document.querySelector(".traducao");
-    let btnGravar = document.getElementById("btnGravar"); // seleciona elemento pelo id
-    let selectOrigem = document.querySelector(".idioma-origem");
-    let selectDestino = document.querySelector(".idioma-destino");
-    let btnAlternar = document.querySelector(".btnAlternar");
-    let recognition = null;
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    const inputTexto = document.querySelector(".input-texto");
+    const outputTexto = document.querySelector(".traducao");
+    const btnGravar = document.getElementById("btnGravar");
+    const btnCopiar = document.getElementById("btnCopiar");
+    const selectOrigem = document.querySelector(".idioma-origem");
+    const selectDestino = document.querySelector(".idioma-destino");
 
+    let recognition = null;
     let ouvindo = false;
     let timerSilencio = null;
-    const tempoSilencio = 1500; // 1.5 segundos de silêncio
+    const tempoSilencio = 700;
 
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
-    // Inicializar reconhecimento de voz apenas se disponível
     if (window.SpeechRecognition || window.webkitSpeechRecognition) {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-        recognition = new SpeechRecognition()
-        recognition.lang = "pt-BR"
-        // iOS não suporta bem continuous = true
-        recognition.continuous = !isSafari
-        recognition.interimResults = false
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.interimResults = false;
+        recognition.continuous = !isSafari;
     }
 
-    function escreverDevagar(texto, velocidade = 25) {
-        outputTexto.value = "";
-        let i = 0;
+    /* ================= MIC ================= */
 
-        const intervalo = setInterval(() => {
-            outputTexto.value += texto.charAt(i);
-            ajustarAlturaTraducao();
-            i++;
-
-            if (i >= texto.length) {
-                clearInterval(intervalo);
-            }
-        }, velocidade);
-    }
-
-    function ajustarAlturaTraducao() {
-        outputTexto.style.height = "auto"
-        outputTexto.style.height = outputTexto.scrollHeight + "px";
-    }
-
-    function alternarIdiomas() {
-        const tempIdioma = selectOrigem.value;
-        selectOrigem.value = selectDestino.value;
-        selectDestino.value = selectDestino.value;
-
-        const tempTexto = inputTexto.value;
-        inputTexto.value = outputTexto.value
-        outputTexto.value = tempTexto;
-
-        if (recognition) {
-            recognition.lang = selectOrigem.value === "pt" ? "pt-BR" : "en-US";
-        }
-
-        console.log("Idiomas invertidos!");
-    }
-
-    if (btnAlternar) {
-        btnAlternar.addEventListener("click", alternarIdiomas);
-    }
-
-    selectDestino.addEventListener("change", () => {
-        selectDestino.classList.add("animar-idioma");
-
-        setTimeout(() => {
-            selectDestino.classList.remove("animar-idioma");
-        }, 400);
-    });
-
-
-    btnCopiar = document.getElementById("btnCopiar");
-    btnCopiar.addEventListener("click", () => {
-        if (!outputTexto.value) return;
-
-        navigator.clipboard.writeText(outputTexto.value);
-    });
-
-    btnGravar.addEventListener("click", () => {
+    btnGravar.addEventListener("click", async () => {
         if (!recognition) {
-            alert("Reconhecimento de voz não suportado neste navegador");
+            alert("Reconhecimento de voz não suportado.");
             return;
         }
+
         if (!ouvindo) {
-            const langMapMic = {
-                "zh-CN": "zh-CN",
+            await pedirPermissaoMic();
+
+            const mapLang = {
+                "pt": "pt-BR",
                 "en": "en-US",
                 "de": "de-DE",
                 "es": "es-ES",
-                "it": "it-IT",
                 "fr": "fr-FR",
-                "pt": "pt-BR"
+                "it": "it-IT",
+                "zh-CN": "zh-CN"
             };
 
-            const origemSelecionada = selectOrigem.value
-            recognition.lang = langMapMic[origemSelecionada] || origemSelecionada;
-
-            ouvindo = true;
-            btnGravar.textContent = "parar";
+            recognition.lang = mapLang[selectOrigem.value] || "pt-BR";
             recognition.start();
+            ouvindo = true;
+            btnGravar.classList.add("gravando");
         } else {
-            ouvindo = false
             recognition.stop();
-            btnGravar.textContent = "ouvir";
+            ouvindo = false;
+            btnGravar.classList.remove("gravando");
         }
     });
 
-    recognition.onstart = () => {
-        console.log("microfone ativo...")
-    };
+    if (recognition) {
 
-    recognition.onerror = (event) => {
-        console.error("Erro no reconhecimento de voz:", event.error);
-        ouvindo = false;
-        btnGravar.textContent = "ouvir";
-    };
+        recognition.onresult = (event) => {
+            const textoFalado = event.results[0][0].transcript;
+            inputTexto.value = textoFalado;
 
-    recognition.onresult = (event) => {
-        const TextoFalado = event.results[0][0].transcript
-        inputTexto.value = TextoFalado
-    };
+            if (timerSilencio) clearTimeout(timerSilencio);
 
-    recognition.onend = () => {
-        if (ouvindo && !isSafari) {
-            // Apenas reinifia em navegadores que suportam continuous
-            try {
-                recognition.start();
-            } catch (err) {
-                console.error("Erro ao reiniciar reconhecimento:", err);
-                ouvindo = false;
-            }
-        } else {
-            btnGravar.textContent = "ouvir";
+            timerSilencio = setTimeout(() => {
+                if (ouvindo) {
+                    ouvindo = false;
+                    recognition.stop();
+                    btnGravar.classList.remove("gravando");
+                }
+            }, tempoSilencio);
+        };
+
+        recognition.onerror = () => {
             ouvindo = false;
-            traduzir();
-        }
-    };
+            btnGravar.classList.remove("gravando");
+        };
 
-    async function pedirPermissaoMIc() {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            stream.getTracks().forEach(track => track.stop());
-            console.log("Permissão para usar o microfone concedida.");
-        } catch (err) {
-            console.log("Permissão para usar o microfone negada:", err);
-        }
+        recognition.onend = () => {
+            if (timerSilencio);
+            timerSilencio = null
 
+            if (ouvindo && !isSafari) {
+                recognition.start();
+            } else {
+                ouvindo = false;
+                btnGravar.classList.remove("gravando");
+                traduzir();
+            }
+        };
     }
+
+    /* ================= TRADUÇÃO ================= */
 
     async function traduzir(texto = null) {
-        const textoParaTraduzir = texto || inputTexto.value.trim();
-        if (!inputTexto.value.trim()) return;
-        
-        const idiomaOrigem = selectOrigem.value;
-        const idiomaDestino = selectDestino.value;
+        const textoFinal = texto || inputTexto.value.trim();
+        if (!textoFinal) return;
+
+        const origem = selectOrigem.value;
+        const destino = selectDestino.value;
 
         try {
-            let endereco = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(textoParaTraduzir)}&langpair=${idiomaOrigem}|${idiomaDestino}`;
+            const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(textoFinal)}&langpair=${origem}|${destino}`;
+            const res = await fetch(url);
+            const data = await res.json();
 
-            let resposta = await fetch(endereco);
+            escreverDevagar(data.responseData.translatedText);
+            falar(data.responseData.translatedText, destino);
 
-            if (!resposta.ok) throw new Error(`Erro HTTP: ${resposta.status}`);
-
-            let dados = await resposta.json();
-            let traducaoFinal = dados.responseData.translatedText;
-
-            escreverDevagar(dados.responseData.translatedText);
-            ajustarAlturaTraducao();
-            falar(traducaoFinal, idiomaDestino);
-
-        } catch (err) {
-            console.error("Erro na tradução:", err);
-            outputTexto.value = "Erro ao traduzir. Verifique sua conexão.";
+        } catch {
+            outputTexto.value = "Erro ao traduzir.";
         }
     }
 
-    // --------- TEXT TO SPEECH ---------
-    function falar(texto, idioma = "en") {
-        const mapLang = {
-            "zh-CN": "zh-CN",
+    function escreverDevagar(texto) {
+        outputTexto.value = "";
+        let i = 0;
+        const interval = setInterval(() => {
+            outputTexto.value += texto.charAt(i++);
+            if (i >= texto.length) clearInterval(interval);
+        }, 20);
+    }
+
+    function falar(texto, idioma) {
+        const map = {
+            pt: "pt-BR",
             en: "en-US",
             de: "de-DE",
             es: "es-ES",
-            it: "it-IT",
             fr: "fr-FR",
-            pt: "pt-BR"
+            it: "it-IT",
+            "zh-CN": "zh-CN"
         };
 
-        speechSynthesis.cancel(); // Cancela qualquer fala em anda5 mento
-        const utterance = new SpeechSynthesisUtterance(texto);
-
-        utterance.lang = mapLang[idioma] || "en-US";
-        speechSynthesis.speak(utterance)
+        speechSynthesis.cancel();
+        const msg = new SpeechSynthesisUtterance(texto);
+        msg.lang = map[idioma] || "en-US";
+        speechSynthesis.speak(msg);
     }
-    // Permite chamar pelo onclick do botão
+
+    async function pedirPermissaoMic() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            stream.getTracks().forEach(track => track.stop());
+        } catch {
+            alert("Permissão de microfone negada.");
+        }
+    }
+
+    btnCopiar.addEventListener("click", () => {
+        if (outputTexto.value) {
+            navigator.clipboard.writeText(outputTexto.value);
+        }
+    });
+
     window.traduzir = traduzir;
 });
