@@ -19,14 +19,8 @@
 
         <textarea class="input-texto" placeholder="Digite ou cole o texto para traduzir"></textarea>
 
-        <div class="resultado">
 
-            <h3 class="titulo-traducao">Tradução</h3>
-            <textarea class="traducao" readonly>A Tradução aparecerá aqui...</textarea>
-
-        </div>
-
-        <div class="button">
+        <div class="idiomas">
 
             <select class="idioma-origem">
                 <option value="pt">Português</option>
@@ -38,6 +32,8 @@
                 <option value="zh-CN">Mandarim</option>
             </select>
 
+             <span class="troca-idioma">⇄</span>
+             
             <select class="idioma-destino">
                 <option value="pt">Português</option>
                 <option value="en">Inglês</option>
@@ -48,22 +44,37 @@
                 <option value="zh-CN">Mandarim</option>
             </select>
 
-            <button onclick="traduzir()">
+        </div>
+
+        <div class="resultado">
+
+            <h3 class="titulo-traducao">Tradução</h3>
+            <textarea class="traducao" readonly>A Tradução aparecerá aqui...</textarea>
+
+        </div>
+
+        <div class="button">
+
+            <button onclick="traduzir()" class="btn-acao">
                 <img src="img/traduzir.svg">
+                <span>Traduzir</span>
             </button>
 
-            <button id="btnCopiar">📋</button>
+            <button id="btnCopiar" class="btn-acao">
+                <img src="img/copiar.svg">
+            <span>CopiarTexto</span>
 
-            <button id="btnGravar">
+            <button id="btnGravar" class="btn-acao">
                 <img src="img/microfone.svg" alt="Gravar áudio">
+                <span>Falar</span>
             </button>
 
 
         </div>
-
-
+    </div>
 
 </body>
+
 <script src="scripts.js">
 
 

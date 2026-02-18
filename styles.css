@@ -11,10 +11,10 @@
 body {
     min-height: 100vh;
     display: flex;
-    
+
     align-items: center;
     justify-content: center;
-    
+
     flex-direction: column;
     background: radial-gradient(circle at top, #1e293b, #0f172a);
     animation: fadeUp 1.4s ease-out;
@@ -24,11 +24,11 @@ body {
     display: flex;
     align-items: center;
     color: #e2e8f0;
-    
+
     letter-spacing: 1px;
     font-size: 26px;
     margin-bottom: 50px;
-    
+
     font-weight: bold;
     animation: float 3s ease-in-out infinite;
 }
@@ -38,7 +38,7 @@ body {
     width: 100%;
     height: 600px;
     max-width: 480px;
-    
+
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -46,30 +46,30 @@ body {
     border-radius: 20px;
     background: #1e293b;
     border: 1px solid #334155;
-    
-    box-shadow: 
-        0 10px 30px rgba(0,0,0,0.4),
-        inset 0 0 20px rgba(99,102,241,0.15);
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.4),
+        inset 0 0 20px rgba(99, 102, 241, 0.15);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 
     position: relative;
     overflow: hidden;
-    
+
 }
 
 .caixa-maior:hover {
     transform: translateY(-4px);
     box-shadow:
-        0 15px 40px rgba(0,0,0,0.5),
-        inset 0 0 25px rgba(139,92,246,0.25);
+        0 15px 40px rgba(0, 0, 0, 0.5),
+        inset 0 0 25px rgba(139, 92, 246, 0.25);
 }
 
 .caixa-maior::before {
     content: "";
     position: absolute;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(139,92,246,0.1));
+    width: 160%;
+    height: 160%;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.1));
     top: -50%;
     left: -50%;
     animation: rotateGlow 8s linear infinite;
@@ -80,37 +80,60 @@ body {
 /* ================= INPUT TEXTO ================= */
 .input-texto {
     width: 100%;
-    height: 110px;
+    min-height: 90px;
+    max-height: 220px;
+
+    resize: none;
+    overflow-y: hidden;
+
     padding: 14px;
+    flex-grow: 1;
 
     border: 1px solid #334155;
     outline: none;
-    resize: none;
 
     background: #0f172a;
     color: #e2e8f0;
 
     font-size: 15px;
     border-radius: 21px;
-    transition: all 0.3 ease;
+    transition: all 0.3s ease;
 }
 
-.inoput-texto:focus {
+.input-texto:focus {
     border-color: #8b5cf6;
-    box-shadow: 0 0 12px rgba(139,92,246,0.4);
-    transform: scale(1.02);
+    box-shadow: 0 0 12px rgba(139, 92, 246, 0.4);
 }
 
 
 
 /* ================= SELECT ================= */
+
+.idiomas {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.troca-idioma {
+    font-size: 18px;
+    color: #8b5cf6;
+    opacity: 0.8;
+    user-select: none;
+    transition: transform 0.3 ease, opacity 0.3s ease;
+}
+
 .idioma-origem,
 .idioma-destino {
+    display: flex;
+    gap: 8px;
+    margin: 12px 0;
     flex: 1;
+
     padding: 8px;
     font-size: 14px;
-    display: flex;
-    flex-wrap: wrap;
+    flex: 1;
+
     border-radius: 10px;
     border: 1px solid #334155;
 
@@ -118,24 +141,82 @@ body {
     color: #e2e8f0;
 }
 
-/* ================= BOTÕES ================= */
-.button button {
-    width: 46px;
-    height: 46px;
-    gap: 15px;
+/* ================= RESULTADO ================= */
+.resultado {
+    min-height: 110px;
+    max-height: 240px;
+    overflow-y: auto;
 
+    padding: 14px;
+    border-radius: 16px;
+    margin: 10px;
+
+    background-color: #0f172a;
     border: 1px solid #334155;
-    border-radius: 30%;
-    cursor: pointer;
+    color: #cbd5e1;
+    flex-grow: 2;
+}
 
+.resultado.active {
+    animation: fadeUp 0.4s ease;
+}
+
+.titulo-traducao {
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #c7c7c7;
+}
+
+.traducao {
+    width: 100%;
+    max-height: 240px;
+    overflow-y: hidden;
+
+    background: transparent;
+    border: none;
+    outline: none;
+    resize: none;
+
+    color: #a3a3a3;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* ================= BOTÕES ================= */
+
+.button {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-acao {
+    
     display: flex;
     align-items: center;
-    justify-content: center;
-    
-    background:#1e293b;
+    justify-content: space-between;
+    gap: 8px;
+
+    padding: 10px 14px;
+    border-radius: 14px;
+
+    background: #1e293b;
+    border: 1px solid #334155;
     color: #e2e8f0;
+
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+
+    transition: all 0.25s ease;
+}
+
+.btn-acao img {
+    width: 18px;
+    height: 18px;
+    display: block;
     
-    transition: all 0.3 ease;
 }
 
 
@@ -154,7 +235,7 @@ body {
 }
 
 button:active {
-    transform: scale(1.2);
+    transform: scale(0.95);
     transition: transform 0.1s ease;
 }
 
@@ -170,57 +251,15 @@ button:active {
 
 
 
-/* ================= RESULTADO ================= */
-.resultado {
-    padding: 14px;
-    border-radius: 16px;
-    margin: 10px;
-    background-color: #0f172a;
-    border: 1px solid #334155;
-    color: #cbd5e1;
-    transition: all 0.3s ease; 
-
-}
-
-.resultado.active {
-    animation: fadeUP 0.4s ease;
-}
-
-.titulo-traducao {
-    font-size: 14px;
-    margin-bottom: 8px;
-    color: #c7c7c7;
-}
-
-.traducao {
-    width: 100%;
-    background: transparent;
-    border: none;
-    outline: none;
-    resize: none;
-    
-    color: #a3a3a3;
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-/* ================= BARRA DE CONTROLES ================= */
-.button {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    
-    margin-top: auto;
-    margin: 16px 0;
-    flex-wrap: wrap;
-}
-
-
 /* =================KeyFrames========================*/
 @keyframes rotateGlow {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 
@@ -229,12 +268,12 @@ button:active {
         box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.6);
         transform: scale(1);
     }
-    
+
     70% {
-        box-shadow: 0 0 0 14px rgba(231, 201, 165, 0);
-        transform: scale(1.08);
+        box-shadow: 0 0 0 10px rgba(231, 201, 165, 0);
+        transform: scale(1.05);
     }
-    
+
     100% {
         box-shadow: 0 0 0 0 rgba(231, 201, 165, 0);
         transform: scale(1);
@@ -246,6 +285,7 @@ button:active {
     0% {
         transform: translateY(0px);
     }
+
     50% {
         transform: translateY(-6px);
     }
@@ -258,45 +298,59 @@ button:active {
 @keyframes fadeUp {
     from {
         opacity: 0;
-        transform: translateY(30px); scale: 0.98;
+        transform: translateY(30px) scale(0.98);
     }
+
     to {
         opacity: 1;
-        transform: translateY(0); scale: (1);
+        transform: translateY(0) scale(1);
     }
 }
 
 /* ================= RESPONSIVO CELULAR ================= */
 @media (max-width: 600px) {
-    
+
     body {
         padding: 10px;
     }
-    
+
     .caixa-maior {
         padding: 16px;
         border-radius: 20px;
     }
-    
+
     .input-texto {
         height: 90px;
         font-size: 14px;
     }
-    
+
     .button {
         gap: 6px;
     }
-    
+
     .button button {
         width: 42px;
         height: 42px;
     }
-    
+
     .button button img {
         width: 20px;
     }
-    
+
     .traducao {
         font-size: 13px;
+    }
+
+    .btn-acao span {
+        display: none;
+    }
+
+    .btn-acao span {
+        display: none;
+    }
+
+    .btn-acao {
+        padding: 10px;
+        justify-content: center;
     }
 }

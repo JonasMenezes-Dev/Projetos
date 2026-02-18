@@ -21,6 +21,15 @@ document.addEventListener("DOMContentLoaded", () => {
         recognition.continuous = !isSafari;
     }
 
+    function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+}
+
+inputTexto.addEventListener('input', () => {
+    autoResize(inputTexto);
+});
+
     /* ================= MIC ================= */
 
     btnGravar.addEventListener("click", async () => {
@@ -57,6 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
         recognition.onresult = (event) => {
             const textoFalado = event.results[0][0].transcript;
             inputTexto.value = textoFalado;
+            autoResize(inputTexto);
 
             if (timerSilencio) clearTimeout(timerSilencio);
 
@@ -112,9 +122,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function escreverDevagar(texto) {
         outputTexto.value = "";
+        autoResize(outputTexto);
+
         let i = 0;
         const interval = setInterval(() => {
             outputTexto.value += texto.charAt(i++);
+            autoResize(outputTexto);
+
             if (i >= texto.length) clearInterval(interval);
         }, 20);
     }
@@ -130,9 +144,20 @@ document.addEventListener("DOMContentLoaded", () => {
             "zh-CN": "zh-CN"
         };
 
-        speechSynthesis.cancel();
+        const voices = speechSynthesis.getVoices();
+        const vozBoa = voices.find(v =>
+            v.lang === map[idioma] && v.name.toLowerCase().includes("natural")
+        ) || voices.find(v => v.lang === map[idioma]);
+        
         const msg = new SpeechSynthesisUtterance(texto);
         msg.lang = map[idioma] || "en-US";
+        msg.voice = vozBoa ||  null;
+        
+        msg.rate = 0.95;
+        msg.pitch = 1.1;
+        
+        
+        speechSynthesis.cancel();
         speechSynthesis.speak(msg);
     }
 
